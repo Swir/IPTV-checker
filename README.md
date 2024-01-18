@@ -8,22 +8,3 @@ You need:
 ```
 -pip install asyncio aiohttp PyQt5
 ```
-
-# 1
-
-2
-
-## Table
-3
----
-4
-## Code Example
-```
-5
-```
-## Image
-![7](6)
-<style>
-body {  color: #80ff00;}
-</style>
-
