@@ -9,3 +9,5 @@ You need:
 -pip install asyncio aiohttp PyQt5
 ```
 <p style="color:red; background-color:yellow;">This is some fancy text!</p>
+
+<p style="font-family: 'Courier New', monospace; color:blue;">This text is in a different font.</p>
