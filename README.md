@@ -3,6 +3,7 @@
 
 program checks the working iptv links and sorts them as you wish, just add the abbreviation of the country of the channels you are looking for
 
+https://github.com/Swir/IPTV-checker/releases
 
 You need:
 ```
