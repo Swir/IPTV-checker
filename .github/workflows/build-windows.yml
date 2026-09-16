@@ -1,0 +1,30 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip -r requirements-dev.txt
+      - name: Generate Windows icon
+        run: python scripts/make_icon.py
+      - name: Build EXE
+        run: >-
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name IPTV-Checker
+          --icon assets/icon.ico
+          --add-data "assets/icon.svg;assets"
+          run.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IPTV-Checker-Windows
+          path: dist/IPTV-Checker.exe

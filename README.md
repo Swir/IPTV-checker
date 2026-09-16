@@ -1,13 +1,15 @@
 <div align="center">
 
-# 📺 IPTV Checker
+<img src="assets/icon.svg" width="120" alt="IPTV Checker icon" />
 
-### M3U playlist inspector, channel filter and VLC launcher
+# IPTV Checker 2.0
 
-**Python • PyQt5 • aiohttp • M3U • VLC • EN / PL**
+### Modern M3U/M3U8 inspector, real stream health checker and VLC launcher
 
-![Python](https://img.shields.io/badge/Python-3.x-0D1117?style=for-the-badge&logo=python&logoColor=00A6FF)
-![PyQt5](https://img.shields.io/badge/GUI-PyQt5-0D1117?style=for-the-badge&logo=qt&logoColor=00A6FF)
+**Python 3.11–3.14 • Qt 6 / PySide6 • aiohttp • Windows / Linux / macOS • EN / PL / NO**
+
+![Python](https://img.shields.io/badge/Python-3.11--3.14-0D1117?style=for-the-badge&logo=python&logoColor=00A6FF)
+![Qt](https://img.shields.io/badge/GUI-PySide6%20%7C%20Qt6-0D1117?style=for-the-badge&logo=qt&logoColor=00A6FF)
 ![aiohttp](https://img.shields.io/badge/NETWORK-aiohttp-0D1117?style=for-the-badge&logo=python&logoColor=00A6FF)
 ![VLC](https://img.shields.io/badge/PLAYBACK-VLC-0D1117?style=for-the-badge&logo=vlcmediaplayer&logoColor=00A6FF)
 
@@ -18,103 +20,121 @@
 
 ---
 
-## 🚀 What is it?
+## What's new in 2.0
 
-**IPTV Checker** is a PyQt5 desktop utility for inspecting and organizing M3U/IPTV playlists you are authorized to use. It can load multiple playlist URLs, display discovered groups and channels, filter entries by name, save playlist data and open selected streams in VLC.
+IPTV Checker has been rebuilt from the old PyQt5 single-file utility into a current Qt6 application. Version 2.0 parses real stream URLs and M3U metadata, performs bounded health checks in a background worker, keeps the GUI responsive and combines the supported languages in one application.
 
-The repository contains separate **English** and **Polish** versions.
+### Highlights
+
+- Multiple remote M3U/M3U8 playlist sources.
+- Drag & drop local `.m3u` and `.m3u8` files.
+- Metadata parser for channel name, group, `tvg-id`, `tvg-name` and `tvg-logo`.
+- Real per-stream health status instead of marking every parsed entry as working.
+- HTTP status, response latency and content type.
+- Live filter by channel name, group and status.
+- Duplicate detection/removal.
+- Export current results to CSV or JSON.
+- Save the filtered result as a clean M3U playlist.
+- Open the selected stream directly in VLC.
+- Automatic VLC discovery plus saved VLC path.
+- Configurable timeout and up to 8 bounded parallel checks.
+- Matrix Blue Qt6 interface.
+- Automatic system-language detection: Polish, Norwegian or English fallback.
+- Display-safe stream URLs: user-info and query data are hidden in the table.
+- Windows EXE build workflow with a dedicated IPTV Checker icon.
+- CI tests for Python 3.11, 3.12, 3.13 and 3.14.
+
+> Use IPTV Checker only with playlists and streams you are authorized to access. The project does not provide subscription content, credentials, accounts, or third-party access.
 
 ---
 
-## ✨ Highlights
-
-| Feature | What it does |
-|---|---|
-| 🔗 Multiple playlist URLs | Process multiple addresses from one input |
-| ⚡ Async networking | Uses `aiohttp` for network operations |
-| 🔎 Channel filtering | Search by channel-name fragment |
-| 📂 Playlist browsing | Browse discovered groups and entries |
-| 💾 Save playlist | Download/save playlist data locally |
-| ▶️ VLC integration | Launch selected streams in VLC |
-| 📍 Custom VLC path | Choose the VLC executable manually |
-| 🌍 EN / PL | Separate English and Polish scripts |
-| 🌑 Dark desktop UI | PyQt5 interface with a dark theme |
-
----
-
-## ⚙️ Quick start
-
-### 1. Clone
+## Quick start
 
 ```bash
 git clone https://github.com/Swir/IPTV-checker.git
 cd IPTV-checker
+python -m pip install -r requirements.txt
+python run.py
 ```
 
-### 2. Install dependencies
+Alternative launcher:
 
 ```bash
-pip install -r requirements.txt
+python -m iptv_checker
 ```
 
-### 3. Run
-
-English:
-
-```bash
-python "checker english.py"
-```
-
-Polski:
-
-```bash
-python checker.py
-```
-
-Install **VLC Media Player** if you want to launch selected streams directly from the application.
+The legacy `checker.py` and `checker english.py` filenames remain as compatibility launchers. Version 2 detects the system language automatically, so separate Polish and English applications are no longer necessary.
 
 ---
 
-## 📋 Requirements
+## How stream checking works
 
-- Python 3.x
-- `PyQt5`
-- `aiohttp`
-- VLC Media Player for playback integration
+Checks run only for stream URLs found in playlists you explicitly load. The checker uses a small bounded request, follows normal redirects, records status/latency/content type and reads at most 512 bytes from each stream. The interface caps parallel checks at 8 and the timeout at 30 seconds.
+
+A successful health check means the endpoint responded at the time of the test. It does not guarantee continuous playback or codec compatibility.
 
 ---
 
-## 🧩 Project files
+## Project structure
 
 ```text
 IPTV-checker/
-├── checker english.py
+├── iptv_checker/
+│   ├── app.py
+│   ├── i18n.py
+│   ├── models.py
+│   ├── network.py
+│   ├── parser.py
+│   ├── theme.py
+│   └── __main__.py
+├── assets/
+│   └── icon.svg
+├── scripts/
+│   └── make_icon.py
+├── tests/
+│   └── test_parser.py
+├── .github/workflows/
+│   ├── ci.yml
+│   └── build-windows.yml
+├── run.py
 ├── checker.py
+├── checker english.py
+├── pyproject.toml
 ├── requirements.txt
-├── dist/
-└── README.md
+└── requirements-dev.txt
 ```
 
 ---
 
-## 🔎 Search keywords
+## Build Windows EXE
 
-`m3u playlist checker` • `iptv playlist viewer` • `m3u checker python` • `pyqt5 iptv tool` • `vlc m3u launcher` • `iptv channel filter` • `m3u playlist manager`
+GitHub Actions includes **Build Windows EXE**. It can be started manually from Actions or automatically from a version tag such as `v2.0.0`.
+
+Local build:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python scripts/make_icon.py
+pyinstaller --noconfirm --clean --onefile --windowed --name IPTV-Checker --icon assets/icon.ico --add-data "assets/icon.svg;assets" run.py
+```
 
 ---
 
-## ⚖️ Responsible use
+## Next improvements
 
-Use this application only with playlists and streams you are authorized to access. The project is a playlist-management and playback utility and does not provide subscription content, credentials or access to third-party services.
+- Optional channel-logo preview cache.
+- Check history and run-to-run comparison.
+- Playlist diff: added / removed / changed channels.
+- Optional scheduled re-checks inside the app.
+- Release packaging and signed checksums.
+- Additional translations without separate source files.
 
 ---
 
 <div align="center">
 
-### `LOAD • FILTER • INSPECT • OPEN IN VLC`
+### `LOAD • FILTER • CHECK • EXPORT • PLAY`
 
-⭐ **If IPTV Checker is useful to you, leave a star — it helps the project get discovered.**
-
-[**← Visit SWIR profile**](https://github.com/Swir) · [**Browse all projects →**](https://github.com/Swir?tab=repositories)
+**by Swir** · [GitHub profile](https://github.com/Swir)
 
 </div>

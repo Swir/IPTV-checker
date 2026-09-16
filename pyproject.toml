@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swir-iptv-checker"
+version = "2.0.0"
+description = "Modern Qt6 M3U/IPTV playlist inspector and stream health checker by Swir"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+authors = [{name = "Swir"}]
+dependencies = [
+  "PySide6>=6.11.2,<7",
+  "aiohttp>=3.14.3,<4",
+]
+keywords = ["iptv", "m3u", "m3u8", "playlist", "vlc", "pyside6", "qt6"]
+
+[project.scripts]
+iptv-checker = "iptv_checker.app:main"
+
+[tool.setuptools.packages.find]
+include = ["iptv_checker*"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

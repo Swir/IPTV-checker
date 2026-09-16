@@ -1,4 +1,3 @@
-"""Compatibility launcher for IPTV Checker 2.x."""
 from iptv_checker.app import main
 
 if __name__ == "__main__":
