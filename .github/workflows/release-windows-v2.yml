@@ -1,0 +1,92 @@
+name: Release Windows v2.0.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".release/v2.0.0"
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip -r requirements-dev.txt
+
+      - name: Compile source
+        run: python -m compileall -q iptv_checker run.py checker.py "checker english.py"
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Generate Windows icon
+        run: python scripts/make_icon.py
+
+      - name: Build Windows EXE
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed `
+            --name "IPTV-Checker-2.0.0-Windows-x64" `
+            --icon "assets/icon.ico" `
+            --add-data "assets/icon.svg;assets" `
+            run.py
+
+      - name: Create SHA256 checksum
+        shell: pwsh
+        run: |
+          $file = "dist/IPTV-Checker-2.0.0-Windows-x64.exe"
+          $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLower()
+          "$hash  IPTV-Checker-2.0.0-Windows-x64.exe" | Set-Content "$file.sha256" -Encoding ascii
+
+      - name: Prepare release notes
+        shell: pwsh
+        run: |
+          @'
+          # IPTV Checker 2.0.0 — Windows
+
+          A major refresh of the original IPTV Checker by Swir.
+
+          ## Highlights
+          - Modern Qt 6 / PySide6 Matrix Blue interface
+          - Real M3U/M3U8 parsing with groups and TVG metadata
+          - Bounded stream health checks for user-loaded playlists
+          - HTTP status, latency and content type
+          - Live channel/group/status filtering
+          - Duplicate removal
+          - Local M3U/M3U8 drag & drop
+          - CSV / JSON report export
+          - Filtered M3U export
+          - VLC auto-detection and selected-channel playback
+          - Automatic EN / PL / NO language detection
+          - Persistent settings
+          - Dedicated Windows application icon
+
+          ## Windows
+          Download `IPTV-Checker-2.0.0-Windows-x64.exe` and run it directly. No Python installation is required.
+
+          A SHA256 checksum is included as a separate asset.
+
+          Use only playlists and streams you are authorized to access.
+          '@ | Set-Content release-notes.md -Encoding utf8
+
+      - name: Publish GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v2.0.0" `
+            "dist/IPTV-Checker-2.0.0-Windows-x64.exe" `
+            "dist/IPTV-Checker-2.0.0-Windows-x64.exe.sha256" `
+            --repo "${{ github.repository }}" `
+            --target "${{ github.sha }}" `
+            --title "IPTV Checker 2.0.0 — Windows" `
+            --notes-file release-notes.md
