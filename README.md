@@ -20,6 +20,12 @@
 
 </div>
 
+## 📸 Screenshot
+
+![IPTV-checker application screenshot](docs/screenshots/application.jpg)
+
+Initial IPTV Checker window on Windows, before loading playlists.
+
 <img width="100%" src="https://raw.githubusercontent.com/Swir/Swir/main/assets/power-divider-v4.svg" alt="SWIR electric divider" />
 
 ## 📍 Project Status
